@@ -32,5 +32,6 @@ const Lab6 = () => {
                 <Drawer.Screen name='Notifications' component={NotificationsScreen} />
             </Drawer.Navigator>
         </NavigationContainer>
-    )
-}
+    );
+};
+export default Lab6;
