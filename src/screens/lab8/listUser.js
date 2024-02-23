@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { styles } from "./styles";
 
 
 const ListUser = ({navigation}) => {
@@ -40,9 +42,37 @@ const ListUser = ({navigation}) => {
     }, [navigation]);
 
     return(
-        <View>
-            <Text>Add user</Text>
-        </View>
+        <ScrollView>
+            <TouchableOpacity
+             style={styles.buttonNew}
+             onPress={() => navigation('AddUser')}>
+                <Text style={styles.buttonNew}>Add New</Text>
+             </TouchableOpacity>
+
+             {data.length
+              ? data.map((item, index) =>(
+                <View style={styles.container} key={index}>
+                    <View style={styles.containerText}>
+                        <Text style={styles.name}> {item.name} </Text>
+                        <Text style={styles.birthday}> {item.birthday} </Text>
+                    </View>
+                    <View style={styles.containerButton}>
+                        <TouchableOpacity style={styles.button}>
+                            <Text onPress={() => handleUpdate(item)}>
+                                update
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity>
+                            <Text onPress={() => handleDelete(item.id)}>
+                                delete
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+              ))
+            : null}
+        </ScrollView>
     );
 };
 export default ListUser;
