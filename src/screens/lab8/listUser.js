@@ -1,16 +1,17 @@
-import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { useEffect, useState } from "react";
+import { Text, TouchableOpacity, View, ScrollView, Modal, TextInput, Touchable } from "react-native";
+
 import { styles } from "./styles";
 
 
 const ListUser = ({navigation}) => {
     const [data, setData] = useState([]);
     const [openDialog, setOpenDialog] = useState(false);
-    const [selecttedUser, setSelectedUser] = useState(undefined);
+    const [selectedUser, setSelectedUser] = useState(undefined);
 
     const getAPI = async () => {
-        const url = 'http://10.0.2.2:3000/users';
+        //const url = 'http://10.0.2.2:3000/users';
+        const url = 'http://localhost:3000/users';
         let result = await fetch(url);
         result = await result.json();
         if(result){
@@ -19,7 +20,7 @@ const ListUser = ({navigation}) => {
     };
 
     const handleDelete = async id => {
-        const url = 'http://10.0.2.2:3000/users';
+        const url = 'http://localhost:3000/users';
         let result = await fetch('$(url)/$(id)',{
             method: 'Delete',
         });
@@ -32,6 +33,9 @@ const ListUser = ({navigation}) => {
 
     const handleUpdate = data => {
         //
+        setOpenDialog(true);
+        setSelectedUser(data);
+        console.log('update');
     };
 
     React.useEffect(() => {
@@ -45,8 +49,8 @@ const ListUser = ({navigation}) => {
         <ScrollView>
             <TouchableOpacity
              style={styles.buttonNew}
-             onPress={() => navigation('AddUser')}>
-                <Text style={styles.buttonNew}>Add New</Text>
+             onPress={() => navigation.navigate('AddUser')}>
+                <Text style={styles.buttonText}>Add New</Text>
              </TouchableOpacity>
 
              {data.length
@@ -58,13 +62,13 @@ const ListUser = ({navigation}) => {
                     </View>
                     <View style={styles.containerButton}>
                         <TouchableOpacity style={styles.button}>
-                            <Text onPress={() => handleUpdate(item)}>
+                            <Text style={styles.buttonText} onPress={() => handleUpdate(item)}>
                                 update
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity>
-                            <Text onPress={() => handleDelete(item.id)}>
+                        <TouchableOpacity style={styles.button}>
+                            <Text style={styles.buttonText} onPress={() => handleDelete(item.id)}>
                                 delete
                             </Text>
                         </TouchableOpacity>
@@ -72,7 +76,69 @@ const ListUser = ({navigation}) => {
                 </View>
               ))
             : null}
+            <Modal visible= {openDialog} transparent = {true}>
+                <UpdateModel
+                 setOpenDialog = {setOpenDialog}
+                 selectedUser = {selectedUser}
+                 getAPI = {getAPI}></UpdateModel>
+            </Modal>
         </ScrollView>
     );
+};
+
+const UpdateModel = props => {
+    const[name,setName] = useState(undefined);
+    const[birthday,setBirthday] = useState(undefined);
+    useEffect(()=>{
+        if(props.selectedUser){
+            setName(props.selectedUser.name);
+            setBirthday(props.selectedUser.birthday);
+        }
+    },[props.selectedUser]);
+const updateUser = async () => {
+    const url = 'http://localhost:3000/users';
+    const id = props.selectedUser.id;
+    let result = await fetch ('${url}/${id}', {
+        method: 'Put',
+        headers: {
+            'Conten-Type' : 'application/json',
+        },
+        body: JSON.stringify({name, birthday}),
+    });
+    result = await result.json();
+    if (result){
+        props.getAPI();
+        props.setOpenDialog(false);
+    }
+};
+return(
+    <View style={styles.modelContent}>
+        <TextInput
+         style={styles.input}
+         placeholder="Enter name"
+         value={name}
+         onChangeText={text => setName(text)}></TextInput>
+
+        <TextInput
+         style={styles.input}
+         placeholder="Enter birthday"
+         value={birthday}
+         onChangeText={text => setBirthday(text)}></TextInput>
+
+         <View style = {styles.buttonGroup}>
+            <TouchableOpacity style={styles.button} onPress={updateUser}>
+                <Text style={styles.buttonText}>Update</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.button}>
+                <Text
+                 style = {styles.buttonText}
+                 onPress={() => props.setOpenDialog(false)}>
+                    Close
+                 </Text>
+            </TouchableOpacity>
+         </View>
+    </View>
+)
 };
 export default ListUser;

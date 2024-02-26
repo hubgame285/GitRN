@@ -22,11 +22,11 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 4,
     paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginHorizontal: 8,
+    paddingHorizontal: 8,
+    marginHorizontal: 2,
     backgroundColor: 'blue',
-    marginBottom: 12,
-    marginTop: 12,
+    marginBottom: 4,
+    marginTop: 4,
  },
  name: {
     textAlign: 'left',
@@ -44,7 +44,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'blue',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    marginHorizontal: 8,
+    marginHorizontal: 4,
     borderRadius: 8,
  },
  buttonText: {
@@ -52,5 +52,25 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold'
  },
+
+ modelContent: {
+   backgroundColor: 'white',
+   padding: 16,
+   marginTop: 100,
+   borderRadius: 8,
+ },
+ input: {
+   height: 40,
+   borderColor: 'gray',
+   borderWidth: 1,
+   borderRadius: 4,
+   paddingHorizontal: 8,
+   marginBottom: 16,
+ },
+ buttonGroup: {
+   flexDirection: 'row',
+   justifyContent: 'center',
+ },
+ 
  
 });
